@@ -10,8 +10,8 @@ const TableComponent = () => {
     }
     return (
         <div>
-<input type='text' value={inputValue} onChange={(e)=>setinputValue(e.target.value)}/>
-            <h1>Table data</h1>
+            <h1>Snacks table</h1>
+<input type='text' value={inputValue} onChange={(e)=>setinputValue(e.target.value)} placeholder='search by product or ingredients!' style={{width: "80%", height: "30px" , margin: "50px 50px"}}/>
             <table>
                 <thead>
                     <tr style={{cursor:"pointer"}}>

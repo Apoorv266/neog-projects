@@ -4,19 +4,20 @@ import { snacks } from '../Data/TableData'
 export const TableContext = createContext()
 const TableContextWrapper = ({ children }) => {
   const [foodData, setfoodData] = useState(snacks)
-
-
   const tableHeads = Object.keys(foodData[0])
-
   const [sortingState, setsortingState] = useState({
-    key: "ingredients",
+    key: "",
     sorting: true
   })
-
   const [inputValue, setinputValue] = useState("")
 
 
-  const sortedTable = inputValue ? [...foodData].filter((item) => item.product_name.toLowerCase().includes(inputValue.toLowerCase()) || item.ingredients.includes(inputValue)) : foodData
+
+  const arrayIncludesStrFunc = (ingredientsArr) => {
+    let filterArray = ingredientsArr.filter((item) => item.toLowerCase().includes(inputValue.toLowerCase()))
+    return filterArray.length > 0 ? true : false
+  }
+  const sortedTable = inputValue ? [...foodData].filter((item) => item.product_name.toLowerCase().includes(inputValue.toLowerCase()) || arrayIncludesStrFunc(item.ingredients)) : foodData
 
   const sortcolumn = sortingState.key === null ? sortedTable : sortingState.sorting === true ? [...sortedTable].sort((a, b) => {
     if (sortingState.key === "product_weight") {
@@ -32,14 +33,14 @@ const TableContextWrapper = ({ children }) => {
         return -1
       }
     } else if (sortingState.key === "product_name") {
-      if (a[0] > b[0]) {
+      if (a[sortingState.key][0].toLowerCase() < b[sortingState.key][0].toLowerCase()) {
         return -1
       }
     }
     else {
       return a[sortingState.key] - b[sortingState.key]
     }
-
+    return null
   }) : [...sortedTable].sort((a, b) => {
     if (sortingState.key === "product_weight") {
 
@@ -51,10 +52,12 @@ const TableContextWrapper = ({ children }) => {
       let word2 = b[sortingState.key][0]
       if (word2 < word1) {
         return -1
-      } else if (sortingState.key === "product_name") {
-        if (a[0] < b[0]) {
-          return -1
-        }
+      } 
+    }else if (sortingState.key === "product_name") {
+      if (a[sortingState.key][0].toLowerCase() > b[sortingState.key][0].toLowerCase()) {
+        return -1
+      } else {
+        return 1
       }
     } else {
       return b[sortingState.key] - a[sortingState.key]
