@@ -1,6 +1,8 @@
 table {
     border:1px solid black;
     width: 100%;
+    border-collapse:collapse;
+    text-align: center;
   }
 
   th, td{
@@ -10,4 +12,8 @@ table {
   th:hover{
     background-color: black;
     color: white;
+  }
+
+  tr{
+    text-align: center;
   }
