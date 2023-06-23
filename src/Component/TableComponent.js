@@ -33,7 +33,7 @@ const TableComponent = () => {
                                 <td>{item.ingredients}</td>
                             </tr>
                         ) :  <tr>
-                       No data to display
+                       <td colSpan={"6"}>No data to display</td>
                     </tr>
                     }
                     
