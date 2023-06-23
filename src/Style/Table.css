@@ -6,3 +6,8 @@ table {
   th, td{
     border:1px solid black;
   }
+
+  th:hover{
+    background-color: black;
+    color: white;
+  }

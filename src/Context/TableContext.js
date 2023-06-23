@@ -1,5 +1,6 @@
 import React, { createContext, useState } from 'react'
 import { snacks } from '../Data/TableData'
+import { arrayIncludesStrFunc } from '../Utilities/UtilityFunctions'
 
 export const TableContext = createContext()
 const TableContextWrapper = ({ children }) => {
@@ -12,57 +13,53 @@ const TableContextWrapper = ({ children }) => {
   const [inputValue, setinputValue] = useState("")
 
 
+  const ascendingFunc = () => {
+    return (
+      [...sortedTable].sort((a, b) => {
+        if (sortingState.key === "product_weight") {
 
-  const arrayIncludesStrFunc = (ingredientsArr) => {
-    let filterArray = ingredientsArr.filter((item) => item.toLowerCase().includes(inputValue.toLowerCase()))
-    return filterArray.length > 0 ? true : false
+          let newPrice1 = Number(a[sortingState.key].slice(0, -1))
+          let newPrice2 = Number(b[sortingState.key].slice(0, -1))
+          return Number(newPrice1) - Number(newPrice2)
+        }
+        else if (sortingState.key === "ingredients" || sortingState.key === "product_name") {
+          let word1 = a[sortingState.key][0].toLowerCase()
+          let word2 = b[sortingState.key][0].toLowerCase()
+          if (word1 < word2) {
+            return -1
+          }
+        }
+        else {
+          return a[sortingState.key] - b[sortingState.key]
+        }
+        return null
+      })
+    )
   }
-  const sortedTable = inputValue ? [...foodData].filter((item) => item.product_name.toLowerCase().includes(inputValue.toLowerCase()) || arrayIncludesStrFunc(item.ingredients)) : foodData
 
-  const sortcolumn = sortingState.key === null ? sortedTable : sortingState.sorting === true ? [...sortedTable].sort((a, b) => {
-    if (sortingState.key === "product_weight") {
+  const decendingFunc = () => {
+    return ([...sortedTable].sort((a, b) => {
+      if (sortingState.key === "product_weight") {
 
-      let newPrice1 = Number(a[sortingState.key].slice(0, -1))
-      let newPrice2 = Number(b[sortingState.key].slice(0, -1))
-      return Number(newPrice1) - Number(newPrice2)
-    }
-    else if (sortingState.key === "ingredients") {
-      let word1 = a[sortingState.key][0]
-      let word2 = b[sortingState.key][0]
-      if (word1 < word2) {
-        return -1
-      }
-    } else if (sortingState.key === "product_name") {
-      if (a[sortingState.key][0].toLowerCase() < b[sortingState.key][0].toLowerCase()) {
-        return -1
-      }
-    }
-    else {
-      return a[sortingState.key] - b[sortingState.key]
-    }
-    return null
-  }) : [...sortedTable].sort((a, b) => {
-    if (sortingState.key === "product_weight") {
-
-      let newPrice1 = Number(a[sortingState.key].slice(0, -1))
-      let newPrice2 = Number(b[sortingState.key].slice(0, -1))
-      return Number(newPrice2) - Number(newPrice1)
-    } else if (sortingState.key === "ingredients") {
-      let word1 = a[sortingState.key][0]
-      let word2 = b[sortingState.key][0]
-      if (word2 < word1) {
-        return -1
-      } 
-    }else if (sortingState.key === "product_name") {
-      if (a[sortingState.key][0].toLowerCase() > b[sortingState.key][0].toLowerCase()) {
-        return -1
+        let newPrice1 = Number(a[sortingState.key].slice(0, -1))
+        let newPrice2 = Number(b[sortingState.key].slice(0, -1))
+        return Number(newPrice2) - Number(newPrice1)
+      } else if (sortingState.key === "ingredients" || sortingState.key === "product_name") {
+        let word1 = a[sortingState.key][0].toLowerCase()
+        let word2 = b[sortingState.key][0].toLowerCase()
+        if (word2 < word1) {
+          return -1
+        }
       } else {
-        return 1
+        return b[sortingState.key] - a[sortingState.key]
       }
-    } else {
-      return b[sortingState.key] - a[sortingState.key]
-    }
-  })
+      return null
+    })
+    )
+  }
+  const sortedTable = inputValue ? [...foodData].filter((item) => item.product_name.toLowerCase().includes(inputValue.toLowerCase()) || arrayIncludesStrFunc(item.ingredients, inputValue)) : foodData
+
+  const sortcolumn = sortingState.key === null ? sortedTable : sortingState.sorting === true ? ascendingFunc() : decendingFunc()
 
 
   return (
